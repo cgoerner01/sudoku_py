@@ -47,7 +47,7 @@ class SudokuSolver:
                 return False
         # if any column contains duplicates, return False
         for j in range(9):
-            col = self.grid.get_column(i)
+            col = self.grid.get_column(j)
             filtered_col = list(filter(lambda a: a != 0, col))
             if (len(filtered_col) != len(set(filtered_col))):
                 return False

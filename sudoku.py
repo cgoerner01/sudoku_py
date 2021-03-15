@@ -3,17 +3,16 @@
 #save and display all possible solutions
 
 from grid import Grid
-
-# refactor to accommodate Grid class
+import copy
 class SudokuSolver:
-    def __init__(self, grid: Grid):
+    def __init__(self, grid):
         self.grid = grid
-        self.grid_copy = grid
+        self.grid_copy = copy.deepcopy(grid)
         self.solutions = []
 
     def set_grid(self, grid: Grid):
         self.grid = grid
-        self.grid_copy = grid
+        self.grid_copy = copy.deepcopy(grid)
         self.solutions.clear()
 
     def possible(self, y, x, n):
@@ -84,6 +83,7 @@ class SudokuSolver:
                             self.grid.set_cell(y,x,i)
                             if self.solve():
                                 return True
+                                # continue or break
                             self.grid.set_cell(y,x,0)
                     return False
 
@@ -100,38 +100,34 @@ class SudokuSolver:
     def get_solutions(self):
         return self.solutions
 
+# example_grid = Grid()
+# example_grid.set_grid([[0,4,0,0,0,9,0,2,0],
+#                        [2,0,0,0,0,7,5,0,0],
+#                        [0,0,0,0,1,6,7,0,0],
+#                        [0,0,7,0,0,0,2,0,4],
+#                        [5,0,0,0,0,0,0,0,3],
+#                        [4,0,1,0,0,0,9,0,0],
+#                        [0,0,2,6,5,0,0,0,0],
+#                        [0,0,4,8,0,0,0,0,1],
+#                        [0,5,0,1,0,0,0,6,2]])
 
-#check edge cases: if sudoku already filled, is it valid?
-#if only zeros / very few given numbers?
+# several_solution_grid = Grid()
+# several_solution_grid.set_grid([[5,3,0,0,7,0,0,0,0],
+#                                 [6,0,0,1,9,5,0,0,0],
+#                                 [0,9,8,0,0,0,0,6,0],
+#                                 [8,0,0,0,6,0,0,0,3],
+#                                 [4,0,0,8,0,3,0,0,1],
+#                                 [7,0,0,0,2,0,0,0,6],
+#                                 [0,6,0,0,0,0,2,8,0],
+#                                 [0,0,0,4,1,9,0,0,5],
+#                                 [0,0,0,0,8,0,0,0,0]])
 
-example_grid = Grid()
-example_grid.set_grid([[0,4,0,0,0,9,0,2,0],
-                       [2,0,0,0,0,7,5,0,0],
-                       [0,0,0,0,1,6,7,0,0],
-                       [0,0,7,0,0,0,2,0,4],
-                       [5,0,0,0,0,0,0,0,3],
-                       [4,0,1,0,0,0,9,0,0],
-                       [0,0,2,6,5,0,0,0,0],
-                       [0,0,4,8,0,0,0,0,1],
-                       [0,5,0,1,0,0,0,6,2]])
-
-several_solution_grid = Grid()
-several_solution_grid.set_grid([[5,3,0,0,7,0,0,0,0],
-                                [6,0,0,1,9,5,0,0,0],
-                                [0,9,8,0,0,0,0,6,0],
-                                [8,0,0,0,6,0,0,0,3],
-                                [4,0,0,8,0,3,0,0,1],
-                                [7,0,0,0,2,0,0,0,6],
-                                [0,6,0,0,0,0,2,8,0],
-                                [0,0,0,4,1,9,0,0,5],
-                                [0,0,0,0,8,0,0,0,0]])
-
-# def main():
-#     sudoku_solver = SudokuSolver(several_solution_grid)
-#     # print(sudoku_solver.possible(6,6,3))
-#     # print(sudoku_solver.is_correct())
-#     sudoku_solver.solve()
-#     sudoku_solver.print_solutions()
+# # def main():
+# #     sudoku_solver = SudokuSolver(several_solution_grid)
+# #     # print(sudoku_solver.possible(6,6,3))
+# #     # print(sudoku_solver.is_correct())
+# #     sudoku_solver.solve()
+# #     sudoku_solver.print_solutions()
 
 
-# main()
+# # main()

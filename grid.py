@@ -14,7 +14,6 @@ class Grid:
                      [0,0,0,0,0,0,0,0,0]]
     
     def set_grid(self, grid):
-        #check validity
         self.grid = grid
 
     def set_cell(self, y, x, n):
@@ -23,7 +22,7 @@ class Grid:
     def get_grid(self):
         return self.grid
         
-    def get_cell(self, y, x,):
+    def get_cell(self, y, x):
         return self.grid[y][x]
 
     def get_row(self, n):
@@ -63,24 +62,18 @@ class Grid:
             if ci == 3 or ci == 6:
                 print("---------------------")
 
-
-
-example_grid = [[0,4,0,0,0,9,0,2,0],
-                [2,0,0,0,0,7,5,0,0],
-                [0,0,0,0,1,6,7,0,0],
-                [0,0,7,0,0,0,2,0,4],
-                [5,0,0,0,0,0,0,0,3],
-                [4,0,1,0,0,0,9,0,0],
-                [0,0,2,6,5,0,0,0,0],
-                [0,0,4,8,0,0,0,0,1],
-                [0,5,0,1,0,0,0,6,2]]
-
-# def main():
-#     grid = Grid()
-#     grid.set_grid(example_grid)
-#     print(grid.get_column(1))
-#     print(grid.get_row(1))
-#     print(grid.get_square(6,6))
-#     grid.printGrid()
-
-# main()
+    def grid_as_string(self):
+        content = ""
+        ci = 0
+        for i in range(len(self.grid)):
+            cj = 0
+            for j in range(len(self.grid[i])):
+                content = content + str(self.grid[i][j]) + " "
+                cj += 1
+                if cj == 3 or cj == 6:
+                    content = content + "| "
+            content = content + "\n"
+            ci += 1
+            if ci == 3 or ci == 6:
+                content = content + "---------------------\n"
+        return content

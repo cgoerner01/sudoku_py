@@ -67,25 +67,39 @@ class SudokuSolver:
         # if all above conditions fail, the sudoku is correct
         return True
 
-
-
+    def get_empty_cells(self):
+        result = []
+        for y in range(9):
+            for x in range(9):
+                if self.grid.get_cell(y,x) == 0:
+                    print("yayee")
+                    tuple = (y,x)
+                    result.append(tuple)
+        print(result)
+        return result
 
     def solve(self):
-        # if there are no empty cells and the sudoku is correct, it is already solved
-        if (not self.has_empty_cell()) and self.is_correct():
-            self.solutions.append(self.grid)
-            return True
         for y in range(9):
             for x in range(9):
                 if self.grid.get_cell(y,x) == 0:
                     for i in range(1,10):
-                        if self.possible(y, x, i):
+                        if self.possible(y,x,i):
                             self.grid.set_cell(y,x,i)
-                            if self.solve():
-                                return True
-                                # continue or break
+                            self.solve()
                             self.grid.set_cell(y,x,0)
-                    return False
+                    return
+        self.solutions.append(copy.deepcopy(self.grid))
+
+    def solve_brute_force(self):
+        for cell in self.get_empty_cells():
+            for i in range(1,10):
+                self.grid.set_cell(cell[0], cell[1], i)
+                if (not self.has_empty_cell()) and self.is_correct():
+                    self.solutions.append(self.grid)
+                self.solve_brute_force()
+                self.grid.set_cell(cell[0], cell[1], 0)
+        
+        
 
     def get_grid(self):
         return self.grid
@@ -100,34 +114,35 @@ class SudokuSolver:
     def get_solutions(self):
         return self.solutions
 
-# example_grid = Grid()
-# example_grid.set_grid([[0,4,0,0,0,9,0,2,0],
-#                        [2,0,0,0,0,7,5,0,0],
-#                        [0,0,0,0,1,6,7,0,0],
-#                        [0,0,7,0,0,0,2,0,4],
-#                        [5,0,0,0,0,0,0,0,3],
-#                        [4,0,1,0,0,0,9,0,0],
-#                        [0,0,2,6,5,0,0,0,0],
-#                        [0,0,4,8,0,0,0,0,1],
-#                        [0,5,0,1,0,0,0,6,2]])
+example_grid = Grid()
+example_grid.set_grid([[0,4,0,0,0,9,0,2,0],
+                       [2,0,0,0,0,7,5,0,0],
+                       [0,0,0,0,1,6,7,0,0],
+                       [0,0,7,0,0,0,2,0,4],
+                       [5,0,0,0,0,0,0,0,3],
+                       [4,0,1,0,0,0,9,0,0],
+                       [0,0,2,6,5,0,0,0,0],
+                       [0,0,4,8,0,0,0,0,1],
+                       [0,5,0,1,0,0,0,6,2]])
 
-# several_solution_grid = Grid()
-# several_solution_grid.set_grid([[5,3,0,0,7,0,0,0,0],
-#                                 [6,0,0,1,9,5,0,0,0],
-#                                 [0,9,8,0,0,0,0,6,0],
-#                                 [8,0,0,0,6,0,0,0,3],
-#                                 [4,0,0,8,0,3,0,0,1],
-#                                 [7,0,0,0,2,0,0,0,6],
-#                                 [0,6,0,0,0,0,2,8,0],
-#                                 [0,0,0,4,1,9,0,0,5],
-#                                 [0,0,0,0,8,0,0,0,0]])
+several_solution_grid = Grid()
+several_solution_grid.set_grid([[5,3,0,0,7,0,0,0,0],
+                                [6,0,0,1,9,5,0,0,0],
+                                [0,9,8,0,0,0,0,6,0],
+                                [8,0,0,0,6,0,0,0,3],
+                                [4,0,0,8,0,3,0,0,1],
+                                [7,0,0,0,2,0,0,0,6],
+                                [0,6,0,0,0,0,2,8,0],
+                                [0,0,0,4,1,9,0,0,5],
+                                [0,0,0,0,8,0,0,0,0]])
 
-# # def main():
-# #     sudoku_solver = SudokuSolver(several_solution_grid)
-# #     # print(sudoku_solver.possible(6,6,3))
-# #     # print(sudoku_solver.is_correct())
-# #     sudoku_solver.solve()
-# #     sudoku_solver.print_solutions()
+def main():
+    sudoku_solver = SudokuSolver(several_solution_grid)
+    # print(sudoku_solver.possible(6,6,3))
+    # print(sudoku_solver.is_correct())
+    sudoku_solver.solve()
+    sudoku_solver.print_solutions()
+    print(len(sudoku_solver.get_solutions()))
 
 
-# # main()
+main()

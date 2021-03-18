@@ -1,12 +1,11 @@
 #TODO:
-# -save solution to desktop
-# -multiple solutions
 # -prettify
+# -german language support
 import os
-from tkinter.constants import BOTH, FLAT, GROOVE, X
+from tkinter.constants import BOTH, FLAT, GROOVE, RIGHT, X, Y
 from sudoku import SudokuSolver
 import tkinter as tk
-from tkinter import Canvas, Label, Toplevel
+from tkinter import Canvas, Label, Scrollbar, Toplevel
 from tkinter.filedialog import asksaveasfile 
 from grid import Grid
 from datetime import date, datetime
@@ -78,8 +77,9 @@ class App:
                         return
                     if tmp != 0:
                         counter += 1
-            if counter <= 10:
-                warning = Label(self.window, text="There are very few given numbers. Computing all possible solutions may take long."). place(x=10, y=400)
+            if counter < 10:
+                warning = Label(self.window, text="There are very few given numbers. Computing all possible solutions is not feasible\non generic computers."). place(x=10, y=400)
+                return
         except ValueError:
             self.error_label = Label(self.window, text="The sudoku input was not valid (not a number).").place(x=10, y=400)
             return
@@ -106,36 +106,41 @@ class App:
     def display_solutions(self, solver : SudokuSolver):
         top = Toplevel(self.window, width=300, height=300)
         top.title("Solution")
-        canvas = Canvas(top, height=300*len(solver.get_solutions()), width=500)
+        scroll = Scrollbar(top)
+        canvas = Canvas(top, height=300*len(solver.get_solutions()), width=500, yscrollcommand= scroll.set, scrollregion=(0,0,500,500))
         counter = 0
         for solution in solver.get_solutions():
             for i in range(10):
                 for j in range(10):
                     if (i % 3) == 0:
-                        canvas.create_line(10, 10 + 260*counter + i*30, 280, 10 + 260*counter + i*30, fill="black", width=2)
+                        canvas.create_line(10, 10 + 290*counter + i*30, 280, 10 + 290*counter + i*30, fill="black", width=2)
                     else:
-                        canvas.create_line(10, 10 + 260*counter + i*30, 280, 10 + 260*counter + i*30, fill="black", width=1)
+                        canvas.create_line(10, 10 + 290*counter + i*30, 280, 10 + 290*counter + i*30, fill="black", width=1)
                     if (j % 3) == 0:
-                        canvas.create_line(10 + 30*j, 10 + 260*counter, 10 + 30*j, 280 + 260*counter, fill="black", width=2)
+                        canvas.create_line(10 + 30*j, 10 + 290*counter, 10 + 30*j, 280 + 290*counter, fill="black", width=2)
                     else:
-                        canvas.create_line(10 + 30*j, 10 + 260*counter, 10 + 30*j, 280 + 260*counter, fill="black", width=1)
+                        canvas.create_line(10 + 30*j, 10 + 290*counter, 10 + 30*j, 280 + 290*counter, fill="black", width=1)
             for i in range(9):
                 for j in range(9):
                     cell = solution.get_cell(i, j)
                     content = tk.Label(top, background="white", width=1, height=1, relief=FLAT, text=cell)
-                    content.place(x= 20 + j*30, y = 17 + i*30)
+                    content.place(x= 20 + j*30, y = 17 + i*30 + 290*counter)
             counter += 1
-        canvas.pack(fill="both", expand=True)
         save_button = tk.Button(master=top, text="Save", command=lambda:self.save_solutions(solver))
         save_button.place(x=300, y=10)
+        scroll.pack(side = RIGHT, fill= Y)
+        scroll.config(command=canvas.yview)
+        canvas.pack(fill="both", expand=True)
 
     def save_solutions(self, solver):
         f = asksaveasfile(mode='w', defaultextension=".txt")
         if f is None:
             return
         content = "Sudoku Solutions\n{}\nThe given sudoku:\n{}\nThe sudoku has {} solution(s).\n".format(datetime.now(), solver.get_grid_copy().grid_as_string(), len(solver.get_solutions()))
+        counter = 1
         for sol in solver.get_solutions():
-            content += sol.grid_as_string()
+            content += "(" + str(counter) + ")\n" + sol.grid_as_string() + "\n"
+            counter += 1
         f.write(content)
         f.close()
 
